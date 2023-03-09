@@ -2,6 +2,7 @@ package med.voll.api.infra.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,9 +24,20 @@ public class TratadorDeErros {
 		return ResponseEntity.badRequest().body(erros.stream().map(DadosErrosValidacao::new).toList());
 	}
 	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity tratarErro400MessageNotReadable(HttpMessageNotReadableException ex) {
+		return ResponseEntity.badRequest().body(new HttpMessageNotReadableRecord(ex));
+	}
+	
 	private record DadosErrosValidacao(String campo, String mensagem) {
 		public DadosErrosValidacao(FieldError erro) {
 			this(erro.getField(), erro.getDefaultMessage());
+		}
+	}
+	
+	private record HttpMessageNotReadableRecord(String erro) {
+		public HttpMessageNotReadableRecord(HttpMessageNotReadableException erro) {
+			this(erro.getMessage());
 		}
 	}
 
