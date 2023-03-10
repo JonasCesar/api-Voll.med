@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import med.voll.api.domain.ValidacaoException;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
@@ -24,12 +25,25 @@ public class AgendaDeConsultasService {
 	
 	public void agendar(DadosAgendamentoConsulta dados) {
 		
-		Medico medico = medicoRepository.findById(dados.idMedico()).get();
+		if(!pacienteRepository.existsById(dados.idPaciente())) {
+			throw new ValidacaoException("Id do paciente informado não existe!");
+		}
+		
+		if(dados.idMedico() != null && !medicoRepository.existsById(dados.idMedico())) {
+			throw new ValidacaoException("Id do médico informado não existe!");
+		}
+		
+		Medico medico = escolherMedico(dados);
 		Paciente paciente = pacienteRepository.findById(dados.idPaciente()).get();
 		
 		Consulta consulta = new Consulta(null, medico, paciente, dados.data());
 		consultaRepository.save(consulta);
 		
+	}
+
+	private Medico escolherMedico(DadosAgendamentoConsulta dados) {
+		
+		return null;
 	}
 
 }
