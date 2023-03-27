@@ -1,11 +1,12 @@
 package med.voll.api.domain.consulta;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import med.voll.api.domain.ValidacaoException;
+import med.voll.api.domain.consulta.validacoes.ValidadorAgendamentoDeConsulta;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
@@ -23,7 +24,10 @@ public class AgendaDeConsultasService {
 	@Autowired
 	private PacienteRepository pacienteRepository;
 	
-	public void agendar(DadosAgendamentoConsulta dados) {
+	@Autowired
+	private List<ValidadorAgendamentoDeConsulta> validadores; //o spring vai procurar todas as classes que implementam essa interface e cria uma lista e injeta a lista com cada uma delas.
+	
+	public DadosDetalhamentoConsulta agendar(DadosAgendamentoConsulta dados) {
 		
 		if(!pacienteRepository.existsById(dados.idPaciente())) {
 			throw new ValidacaoException("Id do paciente informado não existe!");
@@ -33,11 +37,20 @@ public class AgendaDeConsultasService {
 			throw new ValidacaoException("Id do médico informado não existe!");
 		}
 		
+		validadores.forEach(v -> v.validar(dados));
+		
 		Medico medico = escolherMedico(dados);
+		
+		if(medico == null) {
+			throw new ValidacaoException("Não existe médico disponível nessa data");
+		}
+		
 		Paciente paciente = pacienteRepository.getReferenceById(dados.idPaciente());
 		
 		Consulta consulta = new Consulta(null, medico, paciente, dados.data());
 		consultaRepository.save(consulta);
+		
+		return new DadosDetalhamentoConsulta(consulta);
 		
 	}
 
