@@ -1,6 +1,7 @@
 package med.voll.api.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+<<<<<<< HEAD
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,10 +29,26 @@ import med.voll.api.domain.medico.Especialidade;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
+=======
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+>>>>>>> 404de20365dde70863b179dd2cfc473d70be5d38
 class ConsultaControllerTest {
 	
 	@Autowired
 	private MockMvc mvc;
+<<<<<<< HEAD
 	
 	@Autowired
 	private JacksonTester<DadosAgendamentoConsulta> dadosAgendamentoConsultaJson;
@@ -41,6 +58,8 @@ class ConsultaControllerTest {
 	
 	@MockBean
 	private AgendaDeConsultasService agendaService;
+=======
+>>>>>>> 404de20365dde70863b179dd2cfc473d70be5d38
 
 	@Test
 	@DisplayName("Deveria devolver codigo http 400 quando informações está inválidas")
@@ -50,6 +69,7 @@ class ConsultaControllerTest {
 		
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
+<<<<<<< HEAD
 	
 	@Test
 	@DisplayName("Deveria devolver codigo http 200 quando informações estão válidas")
@@ -76,5 +96,7 @@ class ConsultaControllerTest {
 		
 		assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
 	}
+=======
+>>>>>>> 404de20365dde70863b179dd2cfc473d70be5d38
 
 }
